@@ -11,16 +11,14 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float playerSpeed;
-    [SerializeField] private LayerMask groundLayer; 
     private Rigidbody2D body; // reference to player's rigid body 
     private Animator anim; // reference to player animator
-    private BoxCollider2D boxCollider; 
+    private bool grounded; 
 
     private void Awake()
     {
         body = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-        boxCollider = GetComponent<BoxCollider2D>();
     }
 
     void Update()
@@ -42,32 +40,31 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //JUMP
-        if (Input.GetKey(KeyCode.Space) && isGrounded())
+        if (Input.GetKey(KeyCode.Space) && grounded)
         {
             Jump();
         }
 
         //ANIMATIONS
         anim.SetBool("move", horizontalInput != 0); // player move animation when there is a horizontalInput (arrow keys are pressed)
-        anim.SetBool("grounded", isGrounded());
+        anim.SetBool("grounded", grounded);
     }
 
     void Jump()
     {
         body.velocity = new Vector2(body.velocity.x, playerSpeed);
         anim.SetTrigger("jump");
+        grounded = false;
+        
         
     }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        
-    }
-
-    bool isGrounded() // is the player colliding with the ground?
-    {
-        RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.down, 0.1f, groundLayer);
-        return raycastHit.collider != null; 
+        if(collision.gameObject.tag == "Ground")
+        {
+            grounded = true;
+        }
     }
 
 }
