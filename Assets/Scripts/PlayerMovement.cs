@@ -3,14 +3,15 @@ using UnityEngine;
 /*
  * Goes on player 
  * takes care of player movement and animating the movement
- * note: play around with "gravity scale" (in player object's rigidbody) to make the player jump higher or lower (smaller gravity number = jump higher)
+ * note: jump height of player can be adjusted under the player movement script on the player object
  * note: speed of player can be adjusted under the player movement script on the player object
  */
 
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private float playerSpeed;
+    public float playerSpeed;
+    public float jumpHeight;
     private Rigidbody2D body; // reference to player's rigid body 
     private Animator anim; // reference to player animator
     private bool grounded; 
@@ -52,7 +53,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Jump()
     {
-        body.velocity = new Vector2(body.velocity.x, playerSpeed);
+        body.velocity = new Vector2(body.velocity.x, jumpHeight);
         anim.SetTrigger("jump");
         grounded = false;
         
